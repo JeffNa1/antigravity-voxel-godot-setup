@@ -28,6 +28,12 @@ Sau khi chạy xong, hãy xác nhận hệ thống bằng script kiểm tra:
 .\verify.ps1
 ```
 
+### 🤖 Tự Động Kích Hoạt Qua AI Agent (Zero-Click)
+Nếu bạn mở một session Antigravity mới và ném repo hoặc gửi đường link GitHub này cho AI, bạn chỉ cần nhắn:
+> **"Setup môi trường cho tao"** hoặc **"Khởi động môi trường từ repo này"**
+
+Nhờ chỉ thị bắt buộc được đặt ở đầu `GEMINI.md` / `AGENTS.md` (`⚡ 0. AUTOMATIC BOOTSTRAP DIRECTIVE`), AI Agent sẽ **tự động gọi terminal để chạy script cài đặt**, tự động biên dịch MCP server và chạy script chẩn đoán `verify.ps1` mà bạn không cần phải tự gõ bất kỳ dòng lệnh nào!
+
 ---
 
 ## 📦 2. Thành Phần Môi Trường (Environment Architecture)

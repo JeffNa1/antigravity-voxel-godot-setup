@@ -35,6 +35,14 @@ After installation, verify that all skills, configurations, and MCP servers are 
 .\verify.ps1
 ```
 
+### 🤖 For AI Coding Agents (Zero-Click Auto-Bootstrap)
+
+When you drop this repository or its GitHub URL into an AI coding assistant (such as **Google Antigravity**, **Gemini Code Assist**, **Claude Code**, **Cursor**, or **Windsurf**), the agent will automatically detect [`GEMINI.md`](GEMINI.md) / [`AGENTS.md`](AGENTS.md) / [`INSTRUCTIONS.md`](INSTRUCTIONS.md) and **execute the bootstrap installer automatically** without requiring you to run commands manually:
+
+> Simply tell the AI:  
+> **"Setup my environment from this repo"** or **"Cài đặt môi trường từ repo này"**  
+> The agent will execute `.\install.ps1`, run `.\verify.ps1`, and confirm when all 22 skills and 6 MCP servers are operational.
+
 ---
 
 ## 🏗️ What's Included

@@ -235,8 +235,8 @@ if (Test-Path $SrcGlobalConfig) {
 }
 
 # Deploy Workspace Instructions & Agent Rules
-Write-Host "`n[*] Deploying Antigravity Instructions & Rules (GEMINI.md, AGENTS.md, INSTRUCTIONS.md)..." -ForegroundColor Green
-$RuleFiles = @("GEMINI.md", "AGENTS.md", "INSTRUCTIONS.md")
+Write-Host "`n[*] Deploying Antigravity Instructions & Rules (GEMINI.md, AGENTS.md, INSTRUCTIONS.md, .cursorrules, CLAUDE.md)..." -ForegroundColor Green
+$RuleFiles = @("GEMINI.md", "AGENTS.md", "INSTRUCTIONS.md", ".cursorrules", "CLAUDE.md", ".windsurfrules")
 foreach ($rf in $RuleFiles) {
     $srcRf = Join-Path $ScriptDir $rf
     if (Test-Path $srcRf) {
