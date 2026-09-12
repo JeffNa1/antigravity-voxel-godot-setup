@@ -14,10 +14,10 @@ function Print-Check {
         [string]$Detail
     )
     if ($Success) {
-        Write-Host "  [✓] $Title" -ForegroundColor Green
+        Write-Host "  [+] $Title" -ForegroundColor Green
         if ($Detail) { Write-Host "      $Detail" -ForegroundColor DarkGray }
     } else {
-        Write-Host "  [✗] $Title" -ForegroundColor Red
+        Write-Host "  [x] $Title" -ForegroundColor Red
         if ($Detail) { Write-Host "      $Detail" -ForegroundColor Yellow }
     }
 }
@@ -76,6 +76,15 @@ Print-Check -Title "blockbench-mcp built binary" -Success (Test-Path $Blockbench
 Write-Host "`n--- 5. GLOBAL CONFIGURATION ---" -ForegroundColor Yellow
 $GlobalCfg = Join-Path $ConfigDir "config.json"
 Print-Check -Title "config.json" -Success (Test-Path $GlobalCfg) -Detail $GlobalCfg
+
+Write-Host "`n--- 6. WORKSPACE RULES & INSTRUCTIONS ---" -ForegroundColor Yellow
+$GeminiMd = Join-Path $GeminiDir "GEMINI.md"
+$AgentsMd = Join-Path $GeminiDir "AGENTS.md"
+Print-Check -Title "Agent Instructions (GEMINI.md)" -Success (Test-Path $GeminiMd) -Detail $GeminiMd
+Print-Check -Title "Agent Rules (AGENTS.md)" -Success (Test-Path $AgentsMd) -Detail $AgentsMd
+
+$McpInstructionCount = (Get-ChildItem (Join-Path $AgyDir "mcp") -Filter "instructions.md" -Recurse -ErrorAction SilentlyContinue).Count
+Print-Check -Title "MCP Instructions ($McpInstructionCount/5 servers)" -Success ($McpInstructionCount -ge 4) -Detail "mcp/**/instructions.md"
 
 Write-Host "`n==========================================================" -ForegroundColor Cyan
 Write-Host "  VERIFICATION COMPLETE" -ForegroundColor Cyan

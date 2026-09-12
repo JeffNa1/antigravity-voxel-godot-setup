@@ -1,4 +1,4 @@
-﻿# 🌌 Antigravity 2.0 Voxel & Godot Environment Kit
+# 🌌 Antigravity 2.0 Voxel & Godot Environment Kit
 
 [![Antigravity 2.0](https://img.shields.io/badge/Antigravity-2.0-blueviolet?style=for-the-badge&logo=google)](https://github.com/JeffNa1/antigravity-voxel-godot-setup)
 [![Godot Engine](https://img.shields.io/badge/Godot-4.x-478CBF?style=for-the-badge&logo=godotengine&logoColor=white)](https://godotengine.org/)
@@ -83,6 +83,14 @@ After installation, verify that all skills, configurations, and MCP servers are 
 
 ---
 
+### 3. 📜 Agent Instructions & Operational Rules
+
+The repository comes preloaded with instructions that automatically tune the AI Agent's behavior across any session:
+- **`GEMINI.md` / `AGENTS.md` / `INSTRUCTIONS.md`**: Global workspace rules instructing the agent on role identity, Godot 4 pixel-crisp rendering rules, rigid bone hierarchies, Remotion animation timing, and coding standards.
+- **MCP Server Instructions (`mcp/<server>/instructions.md`)**: Detailed guides for all 5 MCP servers (`blender`, `blockbench`, `godot-bridge`, `remotion`, `voxel`) ensuring the agent uses optimal parameters and workflows when invoking tools.
+
+---
+
 ## 📂 Repository Layout
 
 ```
@@ -90,12 +98,12 @@ antigravity-voxel-godot-setup/
 ├── configs/
 │   ├── config.json             # Global Antigravity engine settings
 │   └── mcp_config.json         # MCP server registry template
-├── mcp/                        # Lazy-loaded tool schemas (JSON)
-│   ├── blender/
-│   ├── blockbench/
-│   ├── godot-bridge/
-│   ├── remotion/
-│   └── voxel/
+├── mcp/                        # Lazy-loaded tool schemas & instructions.md
+│   ├── blender/                # Blender instructions & schemas
+│   ├── blockbench/             # Blockbench instructions & schemas
+│   ├── godot-bridge/           # Godot bridge instructions & schemas
+│   ├── remotion/               # Remotion instructions & schemas
+│   └── voxel/                  # Voxel engine instructions & schemas
 ├── mcp_servers/                # Source code & runners for custom MCP tools
 │   ├── voxel-mcp/              # TypeScript procedural voxel server
 │   └── blockbench-mcp/         # TypeScript Blockbench automation server
@@ -103,6 +111,9 @@ antigravity-voxel-godot-setup/
 │   ├── voxel-*/
 │   ├── remotion-*/
 │   └── ...
+├── AGENTS.md                   # Agent system prompt & workspace rules
+├── GEMINI.md                   # Antigravity agent operational guidelines
+├── INSTRUCTIONS.md             # Complete environment & workflow rules
 ├── bootstrap.ps1               # 1-line curl/irm web installer
 ├── install.ps1                 # Full Windows setup script with path substitution
 ├── install.sh                  # Linux / WSL setup script

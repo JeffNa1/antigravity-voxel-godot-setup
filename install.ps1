@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Antigravity Voxel & Godot Environment Bootstrap Installer
 .DESCRIPTION
@@ -60,7 +60,7 @@ if (Test-Path $SkillsSrc) {
     Copy-Item -Path "$SkillsSrc\*" -Destination $SkillsDestConfig -Recurse -Force
     Copy-Item -Path "$SkillsSrc\*" -Destination $SkillsDestAgy -Recurse -Force
     $skillCount = (Get-ChildItem $SkillsDestConfig -Directory).Count
-    Write-Host "  [✓] Successfully installed $skillCount skills into .gemini configuration!" -ForegroundColor Cyan
+    Write-Host "  [+] Successfully installed $skillCount skills into .gemini configuration!" -ForegroundColor Cyan
 } else {
     Write-Warning "Skills directory not found at $SkillsSrc"
 }
@@ -75,7 +75,7 @@ $McpDest = Join-Path $AgyDir "mcp"
 if (Test-Path $McpSrc) {
     Copy-Item -Path "$McpSrc\*" -Destination $McpDest -Recurse -Force
     $mcpCount = (Get-ChildItem $McpDest -Directory).Count
-    Write-Host "  [✓] Installed schemas for $mcpCount MCP servers (blender, blockbench, godot-bridge, remotion, voxel)!" -ForegroundColor Cyan
+    Write-Host "  [+] Installed schemas for $mcpCount MCP servers (blender, blockbench, godot-bridge, remotion, voxel)!" -ForegroundColor Cyan
 }
 
 # ----------------------------------------------------
@@ -98,7 +98,7 @@ if (Test-Path $McpServersSrc) {
             npm run build 2>$null | Out-Null
         }
         Pop-Location
-        Write-Host "  [✓] voxel-mcp ready at: $VoxelMcpDir\dist\index.js" -ForegroundColor Cyan
+        Write-Host "  [+] voxel-mcp ready at: $VoxelMcpDir\dist\index.js" -ForegroundColor Cyan
     }
 
     # Build blockbench-mcp
@@ -111,7 +111,7 @@ if (Test-Path $McpServersSrc) {
             npm run build 2>$null | Out-Null
         }
         Pop-Location
-        Write-Host "  [✓] blockbench-mcp ready at: $BlockbenchMcpDir\dist\index.js" -ForegroundColor Cyan
+        Write-Host "  [+] blockbench-mcp ready at: $BlockbenchMcpDir\dist\index.js" -ForegroundColor Cyan
     }
 }
 
@@ -223,7 +223,7 @@ $TargetMcpConfigs = @(
 
 foreach ($target in $TargetMcpConfigs) {
     Set-Content -Path $target -Value $McpConfigJson -Encoding UTF8
-    Write-Host "  [✓] Wrote MCP config: $target" -ForegroundColor Cyan
+    Write-Host "  [+] Wrote MCP config: $target" -ForegroundColor Cyan
 }
 
 # Copy Global Antigravity Config
@@ -231,8 +231,21 @@ $TargetGlobalConfig = Join-Path $ConfigDir "config.json"
 $SrcGlobalConfig = Join-Path $ScriptDir "configs\config.json"
 if (Test-Path $SrcGlobalConfig) {
     Copy-Item -Path $SrcGlobalConfig -Destination $TargetGlobalConfig -Force
-    Write-Host "  [✓] Wrote Antigravity config: $TargetGlobalConfig" -ForegroundColor Cyan
+    Write-Host "  [+] Wrote Antigravity config: $TargetGlobalConfig" -ForegroundColor Cyan
 }
+
+# Deploy Workspace Instructions & Agent Rules
+Write-Host "`n[*] Deploying Antigravity Instructions & Rules (GEMINI.md, AGENTS.md, INSTRUCTIONS.md)..." -ForegroundColor Green
+$RuleFiles = @("GEMINI.md", "AGENTS.md", "INSTRUCTIONS.md")
+foreach ($rf in $RuleFiles) {
+    $srcRf = Join-Path $ScriptDir $rf
+    if (Test-Path $srcRf) {
+        Copy-Item -Path $srcRf -Destination (Join-Path $GeminiDir $rf) -Force
+        Copy-Item -Path $srcRf -Destination (Join-Path $ConfigDir $rf) -Force
+        Copy-Item -Path $srcRf -Destination (Join-Path $AgyDir $rf) -Force
+    }
+}
+Write-Host "  [+] Deployed agent instructions to ~/.gemini (GEMINI.md, AGENTS.md, INSTRUCTIONS.md)" -ForegroundColor Cyan
 
 # ----------------------------------------------------
 # 7. Verification & Summary

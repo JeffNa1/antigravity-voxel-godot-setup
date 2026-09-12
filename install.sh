@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 set -e
 
 echo "=========================================================="
@@ -34,8 +34,12 @@ if [ -d "$AGY_DIR/mcp_servers/blockbench-mcp" ]; then
     (cd "$AGY_DIR/mcp_servers/blockbench-mcp" && npm install --silent && npm run build) || true
 fi
 
-echo "[4/4] Copying configurations..."
+echo "[4/4] Copying configurations & instructions..."
 cp "$SCRIPT_DIR/configs/config.json" "$CONFIG_DIR/config.json" 2>/dev/null || true
+cp "$SCRIPT_DIR/GEMINI.md" "$GEMINI_DIR/GEMINI.md" 2>/dev/null || true
+cp "$SCRIPT_DIR/AGENTS.md" "$GEMINI_DIR/AGENTS.md" 2>/dev/null || true
+cp "$SCRIPT_DIR/INSTRUCTIONS.md" "$GEMINI_DIR/INSTRUCTIONS.md" 2>/dev/null || true
+cp "$SCRIPT_DIR/GEMINI.md" "$CONFIG_DIR/GEMINI.md" 2>/dev/null || true
 
 echo "=========================================================="
 echo "  SETUP COMPLETED! All skills and MCPs are installed."

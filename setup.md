@@ -1,4 +1,4 @@
-﻿# Antigravity 2.0 Voxel & Godot Environment — Setup & Migration Guide
+# Antigravity 2.0 Voxel & Godot Environment — Setup & Migration Guide
 
 > **Repository**: [https://github.com/JeffNa1/antigravity-voxel-godot-setup](https://github.com/JeffNa1/antigravity-voxel-godot-setup)  
 > **Author**: JeffNa1  
@@ -104,7 +104,28 @@ Kho lưu trữ này bao gồm toàn bộ thiết lập đồng bộ cho 3 mảng
 
 ---
 
-## ⚙️ 5. Cấu Hình Toàn Cục (Global Settings)
+## 📜 5. Hướng Dẫn & Quy Tắc Agent (Instructions & Workspace Rules)
+
+Kho lưu trữ bao gồm bộ hướng dẫn chi tiết dành riêng cho AI Agent (Antigravity 2.0) để đảm bảo Agent khi được gọi trong bất kỳ session hay thư mục nào đều lập tức nắm rõ vai trò, tiêu chuẩn mỹ thuật và quy trình kỹ thuật:
+
+### A. Hệ thống Agent Instructions Toàn cục (`GEMINI.md` / `AGENTS.md` / `INSTRUCTIONS.md`)
+- **Vai trò chuyên biệt**: Lead 3D Voxel Artist, Godot 4 Gameplay Engineer, Remotion Motion Graphics Producer.
+- **Tiêu chuẩn Voxel**: Tọa độ chuẩn Y-up, kích thước bounds chuẩn (32x32x32 hoặc 64x64x64), palette màu 256 giới hạn theo faction/material, greedy meshing tối ưu hóa số lượng đa giác.
+- **Tiêu chuẩn Godot 4**: Quy định bắt buộc dùng texture filter `Nearest` (`texture_filter = 0`), tắt mipmaps để giữ độ sắc nét pixel-crisp, cấu trúc CharacterBody3D, AnimationTree state blending.
+- **Tiêu chuẩn Hoạt ảnh Blockbench**: Phân cấp xương chuẩn (`root` -> `hips` -> `spine` -> `chest` -> `head`, các chi), **100% rigid weight-painting** (không biến dạng mềm giữa các khớp khối), đặt pivot point chính xác tại tâm ổ khớp.
+- **Tiêu chuẩn Remotion Video**: Video không dùng filter blur làm mờ chi tiết pixel, font chữ pixel retro (`Press Start 2P`, `VT323`), chuyển cảnh `spring()` và camera `interpolate()`, khớp nhạc BGM theo nhịp tự nhiên kèm fade-in 0.2s và fade-out 1.5s.
+
+### B. Hướng dẫn từng MCP Server (`mcp/<server>/instructions.md`)
+Mỗi MCP server đều đi kèm tài liệu hướng dẫn chuẩn cách gọi tool và xử lý lỗi:
+- `mcp/godot-bridge/instructions.md`: Kiểm tra port TCP, dump scene tree, chỉnh sửa node an toàn, chụp screenshot kiểm chứng.
+- `mcp/voxel/instructions.md`: Khởi tạo model, các hàm procedural generator, biến đổi khối, xuất `.vox`/`.gltf`.
+- `mcp/blockbench/instructions.md`: Tạo cube, unwrap UV atlas tự động, gán xương và keyframe animation.
+- `mcp/blender/instructions.md`: Thực thi script Python headless với `bpy`, tải asset Polyhaven/Sketchfab.
+- `mcp/remotion/instructions.md`: Cấu trúc composition, API tra cứu tài liệu, đồng bộ version.
+
+---
+
+## ⚙️ 6. Cấu Hình Toàn Cục (Global Settings)
 
 File `configs/config.json` định nghĩa các chính sách tự động hóa cấp cao của Antigravity:
 ```json
@@ -128,10 +149,11 @@ File `configs/config.json` định nghĩa các chính sách tự động hóa c�
 
 ---
 
-## 💻 6. Yêu Cầu Môi Trường (System Prerequisites)
+## 💻 7. Yêu Cầu Môi Trường (System Prerequisites)
 
 Để các công cụ vận hành trơn tru trên máy tính mục tiêu:
 1. **Node.js**: Phiên bản 20+ hoặc 22+ (`node -v` và `npm -v`).
 2. **Python & uv**: Python 3.10+ kèm trình quản lý `uv` / `uvx` (`uv --version`).
 3. **Godot Engine**: Godot 4.x (Standard 64-bit) được đặt trong PATH hoặc tại `~/.gemini/antigravity/bin/godot.exe`.
 4. **Git & GitHub CLI**: `git` và `gh` đã đăng nhập tài khoản.
+
