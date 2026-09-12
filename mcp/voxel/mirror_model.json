@@ -1,0 +1,1 @@
+{"name":"mirror_model","description":"Mirror model across an axis and merge","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"axis":{"enum":["x","y","z"],"type":"string"},"id":{"type":"string"}},"required":["id","axis"],"type":"object"}}

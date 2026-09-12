@@ -1,0 +1,1 @@
+{"name":"is_playing","description":"Compatibility shim: returns {playing, scene}. For richer info (uptime, runtime helper connectivity, last-launched target) prefer get_runtime_status.","parameters":{"properties":{},"type":"object"}}

@@ -1,0 +1,1 @@
+{"name":"rotate_arbitrary","description":"Rotate around axis by arbitrary degrees (voxel approx)","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"axis":{"enum":["x","y","z"],"type":"string"},"degrees":{"type":"number"},"id":{"type":"string"}},"required":["id","axis","degrees"],"type":"object"}}

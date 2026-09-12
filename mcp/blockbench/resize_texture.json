@@ -1,0 +1,1 @@
+{"name":"resize_texture","description":"Resize a texture's bitmap to new dimensions (nearest-neighbour).","parameters":{"properties":{"height":{"type":"number"},"texture":{"type":"string"},"width":{"type":"number"}},"required":["texture","width","height"],"type":"object"}}

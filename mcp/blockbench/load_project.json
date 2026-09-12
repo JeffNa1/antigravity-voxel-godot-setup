@@ -1,0 +1,1 @@
+{"name":"load_project","description":"Load a .bbmodel project file from disk (desktop only).","parameters":{"properties":{"path":{"description":"Absolute path to a .bbmodel file.","type":"string"}},"required":["path"],"type":"object"}}

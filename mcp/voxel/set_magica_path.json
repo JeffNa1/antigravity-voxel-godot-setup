@@ -1,0 +1,1 @@
+{"name":"set_magica_path","description":"Set path to MagicaVoxel.exe","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"exePath":{"type":"string"}},"required":["exePath"],"type":"object"}}

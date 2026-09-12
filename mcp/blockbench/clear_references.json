@@ -1,0 +1,1 @@
+{"name":"clear_references","description":"Remove all loaded reference images and their viewport overlays.","parameters":{"properties":{},"type":"object"}}

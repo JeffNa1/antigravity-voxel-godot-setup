@@ -1,0 +1,1 @@
+{"name":"export_minecraft_schematic","description":"Export model as simple JSON schematic","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"id":{"type":"string"},"path":{"type":"string"}},"required":["id","path"],"type":"object"}}

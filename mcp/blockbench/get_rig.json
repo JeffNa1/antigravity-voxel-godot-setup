@@ -1,0 +1,1 @@
+{"name":"get_rig","description":"Return the skeleton as the animation tools understand it: which bones are the spine/neck/head/tail, and each limb's segment chain with its detected side. Use it to see whether your naming is being picked up before you generate or hand-write an animation.","parameters":{"properties":{},"type":"object"}}

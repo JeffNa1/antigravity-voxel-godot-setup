@@ -1,0 +1,1 @@
+{"name":"get_texture","description":"Read a texture back as an image so you can inspect what it currently looks like. Returns the PNG inline.","parameters":{"properties":{"texture":{"description":"uuid or name.","type":"string"}},"required":["texture"],"type":"object"}}

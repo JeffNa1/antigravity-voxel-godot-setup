@@ -1,0 +1,1 @@
+{"name":"apply_texture","description":"Apply a texture to all faces of an element (or all cubes if `element` omitted).","parameters":{"properties":{"element":{"type":"string"},"texture":{"type":"string"}},"required":["texture"],"type":"object"}}

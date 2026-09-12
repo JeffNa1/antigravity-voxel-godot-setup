@@ -1,0 +1,1 @@
+{"name":"set_cube_uv","description":"Set UV mapping and/or per-face texture on a cube's faces.","parameters":{"properties":{"cube":{"description":"uuid or name of the cube.","type":"string"},"faces":{"description":"Keyed by face direction. Each: {uv:[x1,y1,x2,y2], rotation:0|90|180|270, texture: name|uuid}.","type":"object"}},"required":["cube","faces"],"type":"object"}}

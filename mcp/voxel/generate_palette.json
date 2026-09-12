@@ -1,0 +1,1 @@
+{"name":"generate_palette","description":"Generate procedural palette (sunset/forest/neon/grayscale)","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"id":{"type":"string"},"name":{"enum":["sunset","forest","neon","grayscale"],"type":"string"}},"required":["id"],"type":"object"}}

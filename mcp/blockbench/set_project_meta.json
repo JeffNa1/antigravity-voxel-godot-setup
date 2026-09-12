@@ -1,0 +1,1 @@
+{"name":"set_project_meta","description":"Update the open project's name, geometry name, or texture resolution.","parameters":{"properties":{"geometry_name":{"type":"string"},"name":{"type":"string"},"texture_height":{"type":"number"},"texture_width":{"type":"number"}},"type":"object"}}

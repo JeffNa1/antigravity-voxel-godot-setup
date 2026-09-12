@@ -1,0 +1,1 @@
+{"name":"list_formats","description":"List all model formats available in this Blockbench install (e.g. free, java_block, bedrock, and any added by plugins such as GeckoLib's animated_entity). Use the returned `id` with new_project.","parameters":{"properties":{},"type":"object"}}

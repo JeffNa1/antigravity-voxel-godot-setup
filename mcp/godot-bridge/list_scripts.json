@@ -1,0 +1,1 @@
+{"name":"list_scripts","description":"List all GDScript files in the project with basic metadata.","parameters":{"properties":{},"type":"object"}}

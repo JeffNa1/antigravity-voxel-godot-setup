@@ -1,0 +1,1 @@
+{"name":"list_outliner","description":"Return the full outliner tree (groups/bones and their nested cubes) with uuids, origins and rotations.","parameters":{"properties":{},"type":"object"}}

@@ -1,0 +1,1 @@
+{"name":"apply_palette_to_model","description":"Apply a named or extracted palette to a model","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"id":{"type":"string"},"name":{"enum":["sunset","forest","neon","grayscale"],"type":"string"}},"required":["id"],"type":"object"}}

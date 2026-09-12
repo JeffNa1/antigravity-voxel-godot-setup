@@ -1,0 +1,1 @@
+{"name":"list_references","description":"List the reference images currently loaded (id, name, size, source). Use to see what the user has provided.","parameters":{"properties":{},"type":"object"}}

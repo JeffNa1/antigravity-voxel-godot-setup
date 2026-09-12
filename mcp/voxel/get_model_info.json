@@ -1,0 +1,1 @@
+{"name":"get_model_info","description":"Get detailed info about a model (size, voxel count, bounding box, used colors)","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"id":{"type":"string"}},"required":["id"],"type":"object"}}

@@ -1,0 +1,1 @@
+{"name":"bevel_edges","description":"Soften edges by removing sharp corner voxels","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"id":{"type":"string"}},"required":["id"],"type":"object"}}

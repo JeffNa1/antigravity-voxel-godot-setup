@@ -1,0 +1,1 @@
+{"name":"delete_element","description":"Delete a cube or group (and its children) from the model.","parameters":{"properties":{"element":{"description":"uuid or name.","type":"string"}},"required":["element"],"type":"object"}}

@@ -1,0 +1,1 @@
+{"name":"flip_model","description":"Flip model across an axis (no duplication)","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"axis":{"enum":["x","y","z"],"type":"string"},"id":{"type":"string"}},"required":["id","axis"],"type":"object"}}

@@ -1,0 +1,1 @@
+{"name":"clear_model","description":"Clear all voxels from a model","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"id":{"type":"string"}},"required":["id"],"type":"object"}}

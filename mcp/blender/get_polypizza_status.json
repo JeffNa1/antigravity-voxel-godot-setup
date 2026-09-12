@@ -1,0 +1,1 @@
+{"name":"get_polypizza_status","description":"\nCheck if Poly Pizza integration is enabled in Blender.\nReturns a message indicating whether Poly Pizza features are available.\n","parameters":{"properties":{"user_prompt":{"default":"","title":"User Prompt","type":"string"}},"title":"get_polypizza_statusArguments","type":"object"}}

@@ -1,0 +1,1 @@
+{"name":"smooth_model","description":"Smooth model via majority filter","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"id":{"type":"string"},"iterations":{"exclusiveMinimum":0,"maximum":9007199254740991,"type":"integer"}},"required":["id"],"type":"object"}}

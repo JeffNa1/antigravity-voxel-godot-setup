@@ -1,0 +1,1 @@
+{"name":"get_godot_status","description":"Check if Godot editor is connected to the MCP server.","parameters":{"properties":{},"required":[],"type":"object"}}

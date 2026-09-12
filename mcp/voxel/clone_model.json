@@ -1,0 +1,1 @@
+{"name":"clone_model","description":"Clone a model; returns new model id","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"id":{"type":"string"}},"required":["id"],"type":"object"}}

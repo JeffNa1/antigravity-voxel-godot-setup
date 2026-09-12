@@ -1,0 +1,1 @@
+{"name":"delete_model","description":"Delete a model from memory","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"id":{"type":"string"}},"required":["id"],"type":"object"}}

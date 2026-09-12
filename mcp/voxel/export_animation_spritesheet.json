@@ -1,0 +1,1 @@
+{"name":"export_animation_spritesheet","description":"Export animation frames to a spritesheet PNG","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"animationId":{"type":"string"},"path":{"type":"string"}},"required":["animationId","path"],"type":"object"}}

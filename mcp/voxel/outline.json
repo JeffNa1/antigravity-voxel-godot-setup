@@ -1,0 +1,1 @@
+{"name":"outline","description":"Keep only outer shell voxels (wireframe effect)","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"id":{"type":"string"}},"required":["id"],"type":"object"}}

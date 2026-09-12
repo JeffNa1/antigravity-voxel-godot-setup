@@ -1,0 +1,1 @@
+{"name":"export_project","description":"Export the project through its format's codec (e.g. Java model JSON, Bedrock geometry, GeckoLib model). Provide `path` to write a file directly.","parameters":{"properties":{"path":{"description":"Absolute output path (optional).","type":"string"}},"type":"object"}}

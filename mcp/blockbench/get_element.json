@@ -1,0 +1,1 @@
+{"name":"get_element","description":"Get detailed info for one cube or group by uuid or name.","parameters":{"properties":{"element":{"type":"string"}},"required":["element"],"type":"object"}}

@@ -1,0 +1,1 @@
+{"name":"stop_scene","description":"Stop the currently running scene in the Godot editor. Always stop the scene before editing code to avoid errors repeating every frame.","parameters":{"properties":{},"type":"object"}}

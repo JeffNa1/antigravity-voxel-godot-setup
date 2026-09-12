@@ -1,0 +1,1 @@
+{"name":"save_project","description":"Save the open project as a .bbmodel. Provide `path` to save to a specific file (desktop), otherwise Blockbench's save flow is used.","parameters":{"properties":{"path":{"description":"Absolute file path to save to (optional).","type":"string"}},"type":"object"}}

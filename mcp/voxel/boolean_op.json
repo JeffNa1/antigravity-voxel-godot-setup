@@ -1,0 +1,1 @@
+{"name":"boolean_op","description":"Boolean op (union|intersect|difference) between two models; returns new model id","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"a":{"type":"string"},"b":{"type":"string"},"op":{"enum":["union","intersect","difference"],"type":"string"}},"required":["a","b","op"],"type":"object"}}

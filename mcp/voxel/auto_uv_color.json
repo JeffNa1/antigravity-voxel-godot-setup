@@ -1,0 +1,1 @@
+{"name":"auto_uv_color","description":"Color voxels by height (simple UV)","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"id":{"type":"string"}},"required":["id"],"type":"object"}}

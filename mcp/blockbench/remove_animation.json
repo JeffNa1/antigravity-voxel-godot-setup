@@ -1,0 +1,1 @@
+{"name":"remove_animation","description":"Delete an animation from the project.","parameters":{"properties":{"animation":{"type":"string"}},"required":["animation"],"type":"object"}}

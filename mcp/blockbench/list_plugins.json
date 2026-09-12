@@ -1,0 +1,1 @@
+{"name":"list_plugins","description":"List Blockbench plugins (installed and available in the store). Filter with `query` or `installed_only`.","parameters":{"properties":{"installed_only":{"type":"boolean"},"query":{"description":"Search term matched against id/title/description.","type":"string"}},"type":"object"}}

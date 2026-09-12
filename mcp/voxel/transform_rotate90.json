@@ -1,0 +1,1 @@
+{"name":"transform_rotate90","description":"Rotate model by 90 degrees around an axis","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"axis":{"enum":["x","y","z"],"type":"string"},"id":{"type":"string"}},"required":["id","axis"],"type":"object"}}

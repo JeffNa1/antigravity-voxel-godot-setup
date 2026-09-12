@@ -1,0 +1,1 @@
+{"name":"export_slices","description":"Export model as PNG slices (one per Z layer)","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","additionalProperties":false,"properties":{"folder":{"type":"string"},"id":{"type":"string"}},"required":["id","folder"],"type":"object"}}
