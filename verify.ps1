@@ -1,4 +1,4 @@
-﻿Write-Host "==========================================================" -ForegroundColor Cyan
+Write-Host "==========================================================" -ForegroundColor Cyan
 Write-Host "  VERIFYING ANTIGRAVITY ENVIRONMENT STATUS" -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Cyan
 
@@ -75,7 +75,13 @@ Print-Check -Title "blockbench-mcp built binary" -Success (Test-Path $Blockbench
 
 Write-Host "`n--- 5. GLOBAL CONFIGURATION ---" -ForegroundColor Yellow
 $GlobalCfg = Join-Path $ConfigDir "config.json"
-Print-Check -Title "config.json" -Success (Test-Path $GlobalCfg) -Detail $GlobalCfg
+Print-Check -Title "config.json (Turbo & Auto-execution)" -Success (Test-Path $GlobalCfg) -Detail $GlobalCfg
+
+$ProjectCfg = Join-Path $ConfigDir "projects\outside-of-project.json"
+Print-Check -Title "outside-of-project.json (Project policy)" -Success (Test-Path $ProjectCfg) -Detail $ProjectCfg
+
+$StatePbtxt = Join-Path $AgyDir "antigravity_state.pbtxt"
+Print-Check -Title "antigravity_state.pbtxt (Onboarding bypass)" -Success (Test-Path $StatePbtxt) -Detail $StatePbtxt
 
 Write-Host "`n--- 6. WORKSPACE RULES & INSTRUCTIONS ---" -ForegroundColor Yellow
 $GeminiMd = Join-Path $GeminiDir "GEMINI.md"

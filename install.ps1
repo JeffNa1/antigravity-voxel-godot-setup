@@ -230,8 +230,37 @@ foreach ($target in $TargetMcpConfigs) {
 $TargetGlobalConfig = Join-Path $ConfigDir "config.json"
 $SrcGlobalConfig = Join-Path $ScriptDir "configs\config.json"
 if (Test-Path $SrcGlobalConfig) {
-    Copy-Item -Path $SrcGlobalConfig -Destination $TargetGlobalConfig -Force
+    $cfgContent = Get-Content $SrcGlobalConfig -Raw | ConvertFrom-Json
+    if ($env:COMPUTERNAME) {
+        $cfgContent.userSettings.remoteControlHostname = $env:COMPUTERNAME
+    }
+    $cfgContent | ConvertTo-Json -Depth 6 | Set-Content -Path $TargetGlobalConfig -Encoding UTF8
     Write-Host "  [+] Wrote Antigravity config: $TargetGlobalConfig" -ForegroundColor Cyan
+}
+
+# Copy Projects Config (outside-of-project.json)
+$TargetProjectsDir = Join-Path $ConfigDir "projects"
+if (-not (Test-Path $TargetProjectsDir)) { New-Item -ItemType Directory -Path $TargetProjectsDir -Force | Out-Null }
+$SrcProjectsDir = Join-Path $ScriptDir "configs\projects"
+if (Test-Path $SrcProjectsDir) {
+    Copy-Item -Path "$SrcProjectsDir\*" -Destination $TargetProjectsDir -Force
+    Write-Host "  [+] Wrote Project settings: $TargetProjectsDir\outside-of-project.json" -ForegroundColor Cyan
+}
+
+# Copy Antigravity State (onboarding bypass)
+$SrcState = Join-Path $ScriptDir "configs\antigravity_state.pbtxt"
+$TargetState = Join-Path $AgyDir "antigravity_state.pbtxt"
+if (Test-Path $SrcState) {
+    if (-not (Test-Path $TargetState)) {
+        Copy-Item -Path $SrcState -Destination $TargetState -Force
+        Write-Host "  [+] Initialized Antigravity onboarding state: $TargetState" -ForegroundColor Cyan
+    }
+}
+
+# Create .migrated flag
+$MigratedFile = Join-Path $ConfigDir ".migrated"
+if (-not (Test-Path $MigratedFile)) {
+    New-Item -ItemType File -Path $MigratedFile -Force | Out-Null
 }
 
 # Deploy Workspace Instructions & Agent Rules

@@ -35,7 +35,11 @@ if [ -d "$AGY_DIR/mcp_servers/blockbench-mcp" ]; then
 fi
 
 echo "[4/4] Copying configurations & instructions..."
+mkdir -p "$CONFIG_DIR/projects"
+cp -r "$SCRIPT_DIR/configs/projects/"* "$CONFIG_DIR/projects/" 2>/dev/null || true
 cp "$SCRIPT_DIR/configs/config.json" "$CONFIG_DIR/config.json" 2>/dev/null || true
+cp "$SCRIPT_DIR/configs/antigravity_state.pbtxt" "$AGY_DIR/antigravity_state.pbtxt" 2>/dev/null || true
+touch "$CONFIG_DIR/.migrated" 2>/dev/null || true
 cp "$SCRIPT_DIR/GEMINI.md" "$GEMINI_DIR/GEMINI.md" 2>/dev/null || true
 cp "$SCRIPT_DIR/AGENTS.md" "$GEMINI_DIR/AGENTS.md" 2>/dev/null || true
 cp "$SCRIPT_DIR/INSTRUCTIONS.md" "$GEMINI_DIR/INSTRUCTIONS.md" 2>/dev/null || true
