@@ -28,64 +28,80 @@ Sau khi chạy xong, hãy xác nhận hệ thống bằng script kiểm tra:
 .\verify.ps1
 ```
 
-### 🤖 Tự Động Kích Hoạt Qua AI Agent (Zero-Click)
-Nếu bạn mở một session Antigravity mới và ném repo hoặc gửi đường link GitHub này cho AI, bạn chỉ cần nhắn:
-> **"Setup môi trường cho tao"** hoặc **"Khởi động môi trường từ repo này"**
-
-Nhờ chỉ thị bắt buộc được đặt ở đầu `GEMINI.md` / `AGENTS.md` (`⚡ 0. AUTOMATIC BOOTSTRAP DIRECTIVE`), AI Agent sẽ **tự động gọi terminal để chạy script cài đặt**, tự động tải Godot 4.3 Engine và GitHub CLI (`gh`), tự động biên dịch các custom MCP server và chạy script chẩn đoán `verify.ps1` mà bạn không cần phải tự gõ bất kỳ dòng lệnh nào!
+### 🤖 Tự Động Kích Hoạt & Thực Thi Bắt Buộc Qua AI Agent (Zero-Click Enforcement)
+Nếu bạn mở một session Antigravity mới và ném repo hoặc gửi đường link GitHub này cho AI:
+> Nhờ chỉ thị bắt buộc được đặt ở đầu `GEMINI.md` / `AGENTS.md` (`⚡ 0. AUTOMATIC BOOTSTRAP & ENFORCEMENT DIRECTIVE`), **MỖI KHI BƯỚC VÀO SESSION MỚI, AI AGENT BẮT BUỘC PHẢI TỰ ĐỘNG KIỂM TRA VÀ CÀI ĐẶT ĐỦ 34 SKILLS VÀ 7 MCP SERVERS**:
+> 1. Tự động kiểm tra số lượng skills và MCP servers hiện tại.
+> 2. Nếu thiếu, tự động chạy `install.ps1` (hoặc `bootstrap.ps1` trên môi trường mới).
+> 3. Tự động chạy `verify.ps1` và xác nhận toàn bộ 34 skills và 7 MCP servers đã sẵn sàng trước khi thực hiện bất kỳ yêu cầu nào khác.
 
 ---
 
 ## 📦 2. Thành Phần Môi Trường (Environment Architecture)
 
 Kho lưu trữ này bao gồm toàn bộ thiết lập đồng bộ cho 3 mảng trọng tâm:
-1. **3D Voxel Creation**: MagicaVoxel `.vox`, Blockbench modeling, palette extraction, procedural voxel generation.
+1. **3D Voxel Creation**: MagicaVoxel `.vox`, Blockbench modeling, palette extraction, procedural voxel generation, Three.js live viewer.
 2. **Godot Engine 4.x**: Skeletal inverse kinematics, realtime procedural rigs, live scene tree bridge, and movie recording.
 3. **Remotion Studio**: Full HD / 4K programmatic video animation, retro voxel game HUD overlays, and automated media encoding.
 
 ```
 ~/.gemini/
 ├── antigravity/
-│   ├── mcp_config.json            # MCP server registry
-│   ├── mcp/                       # Lazy-loaded tool schemas (JSON)
+│   ├── mcp_config.json            # MCP server registry (7 servers)
+│   ├── mcp/                       # Lazy-loaded tool schemas (JSON) & instructions.md
 │   │   ├── blender/
 │   │   ├── blockbench/
+│   │   ├── blockworld/
 │   │   ├── godot-bridge/
 │   │   ├── remotion/
 │   │   └── voxel/
 │   ├── mcp_servers/               # Compiled MCP runners
 │   │   ├── voxel-mcp/             # TypeScript procedural voxel engine
-│   │   └── blockbench-mcp/        # Blockbench automation bridge
-│   └── skills/                    # Global Antigravity skills
+│   │   ├── blockbench-mcp/        # Blockbench automation bridge
+│   │   └── blockworld/            # Node.js generative voxel world with Three.js live viewer
+│   └── skills/                    # Global Antigravity skills (34 skills)
 └── config/
     ├── config.json                # Global user preferences & turbo policies
     ├── mcp_config.json            # Duplicate mirror for IDE resilience
-    └── skills/                    # Active skills directory
+    └── skills/                    # Active skills directory (34 skills)
 ```
 
 ---
 
-## 🛠️ 3. Chi Tiết 6 MCP Servers
+## 🛠️ 3. Chi Tiết 7 MCP Servers
 
 | Server Name | Runner Command | Chức Năng Chính | Các Tool Nổi Bật |
 | :--- | :--- | :--- | :--- |
 | **`godot`** | `node .../godot-mcp/build/index.js` | Điều khiển Godot 4 headless, chạy test scene, compile shader | Command execution, export, headless testing |
 | **`godot-bridge`** | `node .../godot-mcp-bridge/dist/index.js` | Kết nối runtime với Godot Editor / Scene Tree qua TCP | `scene_tree_dump`, `add_node`, `connect_signal`, `take_screenshot`, `batch_scene_edit` |
-| **`voxel`** | `node .../voxel-mcp/dist/index.js` | Engine xử lý 3D voxel, xuất file `.vox`, `.obj`, palette | `create_model`, `fill_box`, `flood_fill`, `export_gltf`, `save_vox`, `generate_character` |
-| **`blockbench`** | `node .../blockbench-mcp/dist/index.js` | Tự động hóa Blockbench: tạo cube, UV mapping, xương, keyframe | `add_cube`, `add_group`, `create_rig`, `create_animation`, `export_model` |
+| **`voxel`** | `node .../voxel-mcp/dist/index.js` | Engine xử lý 3D voxel, xuất file `.vox`, `.obj`, palette | `create_model`, `fill_box`, `flood_fill`, `export_gltf`, `save_vox`, `generate_character` (80+ tools) |
+| **`blockbench`** | `node .../blockbench-mcp/dist/index.js` | Tự động hóa Blockbench: tạo cube, UV mapping, xương, keyframe | `add_cube`, `add_group`, `create_rig`, `create_animation`, `export_model` (40+ tools) |
 | **`blender`** | `uvx blender-mcp` | Điều khiển Blender 4 bằng Python, tải model Sketchfab / Polyhaven | `execute_blender_code`, `search_polyhaven_assets`, `import_generated_asset` |
 | **`remotion`** | `node .../@remotion/mcp/dist/index.js` | Tra cứu tài liệu và build Remotion video studio | `remotion-documentation` |
+| **`blockworld`** | `node .../blockworld/server.js` | Dựng voxel theo khối lớn và Three.js live viewer trực tiếp | `world_info`, `place_box`, `place_cylinder`, `place_cone`, `place_sphere`, `place_tube`, `mirror`, `clear` |
 
 ---
 
-## 🧠 4. Danh Sách 22 Antigravity Skills
+## 🧠 4. Danh Sách 34 Antigravity Skills
 
-### Voxel & Game Development (5 Skills)
+### Voxel & Game Modeling (17 Skills)
 - **`voxel-modeling`**: Quy trình tạo hình khối voxel 3D, tối ưu hóa mesh, quản lý palette màu chuẩn MagicaVoxel.
-- **`voxel-rigging`**: Kỹ thuật phân cấp xương, trọng số 100% per-limb rigid weight painting, pivot points cho nhân vật khối.
+- **`voxel-art`**: Kỹ thuật MagicaVoxel chuyên sâu, phong cách Teardown, greedy meshing, AO baking và tối ưu đa giác.
+- **`voxel-icon`**: Thiết kế icon vật phẩm khối isometric 3D, animation loop 4 khung hình cho HUD.
+- **`voxel-rigging`**: Kỹ thuật phân cấp xương, trọng số 100% per-limb rigid weight painting, socket pivot points.
 - **`voxel-animating`**: Nguyên tắc hoạt họa voxel, chu kỳ bước đi (walk cycle), idle thở, jump, blend state machine.
 - **`voxel-godot-pipeline`**: Tích hợp Godot 4: cấu hình texture pixel-crisp, CharacterBody3D, AnimationTree, GridMap.
 - **`blockbench-pipeline`**: Quy trình tạo model low-poly, UV atlas unwrap, khung xương và export glTF sang Godot.
+- **`blockbench-modeling`**: Kỹ thuật box modeling nâng cao, quản lý cube budget, pivot alignments.
+- **`blockbench-animation`**: Hoạt họa voxel theo phong cách stepped hoặc linear, arc tấn công và squash & stretch.
+- **`blockbench-texturing`**: Trải UV layout, đồng nhất texel density, vẽ pixel art và highlight cạnh.
+- **`blockbench-pbr-materials`**: Thiết lập Normal maps, roughness, metalness, emission masks cho Blockbench.
+- **`blockbench-hytale`**: Tỷ lệ nhân vật và quy chuẩn thẩm mỹ voxel fantasy theo phong cách Hytale.
+- **`blockworld`**: Quy chuẩn tỷ lệ thế giới khối, bảng màu 100 vật liệu và kỹ thuật tạo khối hình học lớn.
+- **`dragon`**: Kỹ thuật tạo hình sinh vật rồng/quái thú voxel: sống lưng chữ S, cánh màng, móng vuốt, sừng.
+- **`castle`**: Kiến trúc lâu đài cổ tích voxel: tháp nhọn witch-hat vươn cao, pháo đài, ban công gothic.
+- **`weapon-design`**: Thiết kế vũ khí (dao găm ngọc, kiếm ma thuật, trượng phép) tỉ lệ chuẩn tay cầm.
+- **`vehicle-design`**: Thiết kế phương tiện cơ giới dạng khối voxel/low-poly: xe cộ, robot mech, phi thuyền.
 
 ### Remotion Video Automation (12 Skills)
 - **`remotion-best-practices`**: Router và cẩm nang kiến trúc code Remotion.

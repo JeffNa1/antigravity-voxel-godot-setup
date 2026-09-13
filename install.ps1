@@ -2,8 +2,8 @@
 .SYNOPSIS
     Antigravity Voxel & Godot Environment Bootstrap Installer
 .DESCRIPTION
-    Restores the complete Antigravity 2.0 configuration, including 6 MCP servers,
-    22 specialized skills, tool schemas, global configs, and dependencies.
+    Restores the complete Antigravity 2.0 configuration, including 7 MCP servers,
+    34 specialized skills, tool schemas, global configs, and dependencies.
 #>
 
 [CmdletBinding()]
@@ -63,7 +63,7 @@ if ($env:PATH -notlike "*$BinDir*") {
 # ----------------------------------------------------
 # 2. Copy Antigravity Skills
 # ----------------------------------------------------
-Write-Host "`n[2/7] Installing 22 Antigravity skills..." -ForegroundColor Green
+Write-Host "`n[2/7] Installing 34 Antigravity skills..." -ForegroundColor Green
 $SkillsSrc = Join-Path $ScriptDir "skills"
 $SkillsDestConfig = Join-Path $ConfigDir "skills"
 $SkillsDestAgy = Join-Path $AgyDir "skills"
@@ -87,13 +87,13 @@ $McpDest = Join-Path $AgyDir "mcp"
 if (Test-Path $McpSrc) {
     Copy-Item -Path "$McpSrc\*" -Destination $McpDest -Recurse -Force
     $mcpCount = (Get-ChildItem $McpDest -Directory).Count
-    Write-Host "  [+] Installed schemas for $mcpCount MCP servers (blender, blockbench, godot-bridge, remotion, voxel)!" -ForegroundColor Cyan
+    Write-Host "  [+] Installed schemas for $mcpCount MCP servers (blender, blockbench, godot-bridge, remotion, voxel, blockworld)!" -ForegroundColor Cyan
 }
 
 # ----------------------------------------------------
 # 4. Install & Build Custom MCP Servers
 # ----------------------------------------------------
-Write-Host "`n[4/7] Setting up Custom MCP Servers (voxel-mcp, blockbench-mcp)..." -ForegroundColor Green
+Write-Host "`n[4/7] Setting up Custom MCP Servers (voxel-mcp, blockbench-mcp, blockworld)..." -ForegroundColor Green
 $McpServersSrc = Join-Path $ScriptDir "mcp_servers"
 $McpServersDest = Join-Path $AgyDir "mcp_servers"
 
@@ -246,6 +246,7 @@ if (-not (Test-Path $RemotionMcpEntry)) {
 
 $VoxelEntry = (Join-Path $AgyDir "mcp_servers\voxel-mcp\dist\index.js")
 $BlockbenchEntry = (Join-Path $AgyDir "mcp_servers\blockbench-mcp\dist\index.js")
+$BlockworldEntry = (Join-Path $AgyDir "mcp_servers\blockworld\server.js")
 
 # Build mcp_config structure
 $McpConfigObj = @{
@@ -279,6 +280,10 @@ $McpConfigObj = @{
         "remotion" = @{
             command = "node"
             args = @($RemotionMcpEntry)
+        }
+        "blockworld" = @{
+            command = "node"
+            args = @($BlockworldEntry)
         }
     }
 }

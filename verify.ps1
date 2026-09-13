@@ -66,7 +66,7 @@ $SkillsCount = 0
 if (Test-Path $SkillsConfig) {
     $SkillsCount = (Get-ChildItem $SkillsConfig -Directory).Count
 }
-Print-Check -Title "Config Skills ($SkillsCount installed)" -Success ($SkillsCount -ge 15) -Detail $SkillsConfig
+Print-Check -Title "Config Skills ($SkillsCount/34 installed)" -Success ($SkillsCount -ge 30) -Detail $SkillsConfig
 
 Write-Host "`n--- 3. MCP SERVERS CONFIGURATION ---" -ForegroundColor Yellow
 $McpConfigFile = Join-Path $AgyDir "mcp_config.json"
@@ -108,7 +108,7 @@ Print-Check -Title "Agent Instructions (GEMINI.md)" -Success (Test-Path $GeminiM
 Print-Check -Title "Agent Rules (AGENTS.md)" -Success (Test-Path $AgentsMd) -Detail $AgentsMd
 
 $McpInstructionCount = (Get-ChildItem (Join-Path $AgyDir "mcp") -Filter "instructions.md" -Recurse -ErrorAction SilentlyContinue).Count
-Print-Check -Title "MCP Instructions ($McpInstructionCount/5 servers)" -Success ($McpInstructionCount -ge 4) -Detail "mcp/**/instructions.md"
+Print-Check -Title "MCP Instructions ($McpInstructionCount/6 servers)" -Success ($McpInstructionCount -ge 5) -Detail "mcp/**/instructions.md"
 
 Write-Host "`n==========================================================" -ForegroundColor Cyan
 Write-Host "  VERIFICATION COMPLETE" -ForegroundColor Cyan
