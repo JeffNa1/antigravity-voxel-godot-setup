@@ -86,8 +86,10 @@ if ($HasMcpConfig) {
 Write-Host "`n--- 4. CUSTOM MCP RUNNERS ---" -ForegroundColor Yellow
 $VoxelDist = Join-Path $AgyDir "mcp_servers\voxel-mcp\dist\index.js"
 $BlockbenchDist = Join-Path $AgyDir "mcp_servers\blockbench-mcp\dist\index.js"
+$BlockworldDist = Join-Path $AgyDir "mcp_servers\blockworld\server.js"
 Print-Check -Title "voxel-mcp built binary" -Success (Test-Path $VoxelDist) -Detail $VoxelDist
 Print-Check -Title "blockbench-mcp built binary" -Success (Test-Path $BlockbenchDist) -Detail $BlockbenchDist
+Print-Check -Title "blockworld server binary" -Success (Test-Path $BlockworldDist) -Detail $BlockworldDist
 
 Write-Host "`n--- 5. GLOBAL CONFIGURATION ---" -ForegroundColor Yellow
 $GlobalCfg = Join-Path $ConfigDir "config.json"

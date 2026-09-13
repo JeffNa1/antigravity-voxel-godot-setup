@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>blockworld</title>
+<style>
+  :root {
+    --paper:  #f2efe6;
+    --ink:    #16181d;
+    --ink-2:  #5b6068;
+    --rule:   #cfcabb;
+    --live:   #2f6f4f;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+    overflow: hidden;
+  }
+  #stage { position: fixed; inset: 0; }
+  canvas { display: block; }
+
+  .frame {
+    position: fixed; inset: 18px;
+    border: 1px solid var(--rule);
+    pointer-events: none; z-index: 2;
+  }
+  .frame::before, .frame::after {
+    content: ""; position: absolute;
+    width: 9px; height: 9px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+  }
+  .frame::before { top: -5px; left: -5px; }
+  .frame::after  { bottom: -5px; right: -5px; }
+
+  /* ---- title block ---------------------------------------------- */
+
+  .titleblock {
+    position: fixed; right: 18px; bottom: 18px;
+    border: 1px solid var(--rule); border-right: 0; border-bottom: 0;
+    background: var(--paper);
+    display: grid; grid-template-columns: auto auto;
+    z-index: 3; font-size: 10px; letter-spacing: .08em;
+  }
+  .titleblock div {
+    padding: 7px 12px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+  .k { color: var(--ink-2); text-transform: uppercase; }
+  .v { font-variant-numeric: tabular-nums; text-align: right; min-width: 84px; }
+
+  /* ---- header ---------------------------------------------------- */
+
+  header {
+    position: fixed; top: 18px; left: 18px;
+    padding: 14px 18px; z-index: 3; pointer-events: none;
+  }
+  h1 {
+    margin: 0; font-size: 12px; font-weight: 600;
+    letter-spacing: .34em; text-transform: uppercase;
+  }
+  .sub {
+    margin-top: 5px; font-size: 10px;
+    letter-spacing: .1em; color: var(--ink-2);
+  }
+
+  /* ---- link ------------------------------------------------------ */
+
+  .link {
+    position: fixed; top: 18px; right: 18px; z-index: 3;
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 12px;
+    border: 1px solid var(--rule); background: var(--paper);
+    font-size: 10px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-2);
+  }
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--ink-2); transition: background .3s;
+  }
+  .link.on .dot { background: var(--live); animation: pulse 1.8s infinite; }
+  .link.on .txt { color: var(--live); }
+  @keyframes pulse { 50% { opacity: .25; } }
+
+  /* ---- controls legend (bottom-left) ------------------------------ */
+
+  .keys {
+    position: fixed; left: 18px; bottom: 18px; z-index: 3;
+    border: 1px solid var(--rule); border-left: 0; border-bottom: 0;
+    background: var(--paper);
+    font-size: 10px; letter-spacing: .06em;
+    color: var(--ink-2);
+    display: grid; grid-template-columns: auto 1fr;
+  }
+  .keys div {
+    padding: 6px 11px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+  .keys .kb {
+    color: var(--ink);
+    font-weight: 600;
+    text-align: center;
+    min-width: 34px;
+  }
+  .keys.hushed { opacity: .35; transition: opacity .4s; }
+
+  /* ---- toast ------------------------------------------------------ */
+
+  .toast {
+    position: fixed; left: 50%; top: 50%;
+    transform: translate(-50%, -50%) scale(.94);
+    z-index: 5;
+    padding: 10px 20px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    opacity: 0; pointer-events: none;
+    transition: opacity .18s, transform .18s;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .link.on .dot { animation: none; }
+    .toast { transition: opacity .18s; }
+  }
+  @media (max-width: 720px) {
+    .keys { display: none; }
+    .titleblock { font-size: 9px; }
+    .titleblock div { padding: 6px 9px; }
+    .v { min-width: 62px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stage"></div>
+<div class="frame"></div>
+
+<header>
+  <h1>Blockworld</h1>
+  <div class="sub">agent-constructed · drag to orbit</div>
+</header>
+
+<div class="link" id="link">
+  <span class="dot"></span><span class="txt" id="linktxt">offline</span>
+</div>
+
+<div class="keys" id="keys">
+  <div class="kb">drag</div>  <div>orbit</div>
+  <div class="kb">scroll</div><div>zoom</div>
+  <div class="kb">⇧drag</div> <div>pan</div>
+  <div class="kb">F</div>     <div>reframe</div>
+  <div class="kb">R</div>     <div>auto-rotate</div>
+  <div class="kb">G</div>     <div>grid</div>
+  <div class="kb">E</div>     <div>edges</div>
+  <div class="kb">1–4</div>   <div>view</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="titleblock">
+  <div class="k">blocks</div>  <div class="v" id="m-blocks">0</div>
+  <div class="k">extent</div>  <div class="v" id="m-extent">—</div>
+  <div class="k">grid</div>    <div class="v" id="m-grid">—</div>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls }             from 'three/addons/controls/OrbitControls.js';
+import { MATERIALS }                 from '../palette.js';
+import { BLOCK_SIZE, gridLabel }     from '../config.js';
+
+/* ------------------------------------------------------------------ *
+ * config
+ * ------------------------------------------------------------------ */
+
+const DROP_H     = 7 * BLOCK_SIZE;
+const DROP_MS    = 300;
+const STAGGER_MS = 5;
+const WS_URL     = 'ws://localhost:8080';
+const INK        = 0x16181d;
+
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ------------------------------------------------------------------ *
+ * scene
+ * ------------------------------------------------------------------ */
+
+const scene    = new THREE.Scene();
+const camera   = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.1, 4000);
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+document.getElementById('stage').appendChild(renderer.domElement);
+
+camera.position.set(70, 50, 70);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping   = true;
+controls.dampingFactor   = 0.06;
+controls.maxPolarAngle   = Math.PI / 2 - 0.02;
+controls.minDistance     = 3 * BLOCK_SIZE;    // was 6 — get right up to a block
+controls.maxDistance     = 900;
+controls.zoomSpeed       = 1.25;
+controls.panSpeed        = 0.9;
+controls.autoRotate      = !reduceMotion;
+controls.autoRotateSpeed = 0.35;
+controls.target.set(0, 12, 0);
+
+// Shift+drag pans (left-drag stays orbit)
+controls.mouseButtons = {
+  LEFT:   THREE.MOUSE.ROTATE,
+  MIDDLE: THREE.MOUSE.DOLLY,
+  RIGHT:  THREE.MOUSE.PAN,
+};
+
+/* --- who owns the camera? ------------------------------------------
+ * The auto-framer runs while the agent builds, then gets out of the way
+ * the instant the user grabs the mouse. Without this it fights every
+ * zoom you make — you push in, it eases you back out. */
+
+let userHasCamera = false;
+
+controls.addEventListener('start', () => {
+  controls.autoRotate = false;
+  userHasCamera = true;
+  hushKeys();
+});
+
+/* ------------------------------------------------------------------ *
+ * grid
+ * ------------------------------------------------------------------ */
+
+const grid = new THREE.GridHelper(200 * BLOCK_SIZE, 100,
+  new THREE.Color(0xb9b2a1), new THREE.Color(0xd8d3c6));
+grid.material.transparent = true;
+grid.material.opacity = 0.4;
+scene.add(grid);
+
+/* ------------------------------------------------------------------ *
+ * geometry + materials
+ * ------------------------------------------------------------------ */
+
+const cubeGeo = new THREE.BoxGeometry(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+const edgeGeo = new THREE.EdgesGeometry(cubeGeo, 1);
+const edgeMat = new THREE.LineBasicMaterial({
+  color: INK, transparent: true, opacity: 0.5,
+});
+
+const fillCache = new Map();
+function fillFor(name) {
+  if (!fillCache.has(name)) {
+    fillCache.set(name, new THREE.MeshBasicMaterial({
+      color: MATERIALS[name] ?? 0xe6e2d8,
+      polygonOffset: true,
+      polygonOffsetFactor: 1,
+      polygonOffsetUnits: 1,
+    }));
+  }
+  return fillCache.get(name);
+}
+
+/* ------------------------------------------------------------------ *
+ * world — keyed index, so removal is O(1) and never re-drops
+ * ------------------------------------------------------------------ */
+
+const world = new THREE.Group();
+scene.add(world);
+
+const index   = new Map();     // "x,y,z" -> mesh
+const falling = new Map();     // "x,y,z" -> { mesh, rest, start }
+const bounds  = fresh();
+let arrivals  = 0;
+
+const K = (x, y, z) => `${x},${y},${z}`;
+
+function fresh() {
+  return { minX: Infinity, maxX: -Infinity,
+           minY: Infinity, maxY: -Infinity,
+           minZ: Infinity, maxZ: -Infinity };
+}
+
+function addBlock(x, y, z, material, animate = true) {
+  const k = K(x, y, z);
+
+  const prev = index.get(k);
+  if (prev) { world.remove(prev); falling.delete(k); }
+
+  const mesh = new THREE.Mesh(cubeGeo, fillFor(material));
+  const wire = new THREE.LineSegments(edgeGeo, edgeMat);
+  wire.visible = edgesOn;
+  mesh.add(wire);
+
+  const rest = new THREE.Vector3(
+    x * BLOCK_SIZE,
+    y * BLOCK_SIZE + BLOCK_SIZE / 2,
+    z * BLOCK_SIZE
+  );
+
+  if (!animate || reduceMotion || prev) {
+    mesh.position.copy(rest);
+  } else {
+    mesh.position.set(rest.x, rest.y + DROP_H, rest.z);
+    mesh.scale.setScalar(0.8);
+    falling.set(k, {
+      mesh, rest,
+      start: performance.now() + (arrivals++ % 90) * STAGGER_MS,
+    });
+  }
+
+  world.add(mesh);
+  index.set(k, mesh);
+  track(x, y, z);
+}
+
+/* Targeted removal. Does NOT rebuild the world, so nothing already at
+ * rest gets re-animated. */
+function removeBlock(x, y, z) {
+  const k = K(x, y, z);
+  const mesh = index.get(k);
+  if (!mesh) return;
+  world.remove(mesh);
+  index.delete(k);
+  falling.delete(k);
+}
+
+function clearWorld() {
+  world.clear();
+  index.clear();
+  falling.clear();
+  arrivals = 0;
+  Object.assign(bounds, fresh());
+  userHasCamera = false;          // new build → auto-frame takes over again
+  paint();
+}
+
+function track(x, y, z) {
+  bounds.minX = Math.min(bounds.minX, x); bounds.maxX = Math.max(bounds.maxX, x);
+  bounds.minY = Math.min(bounds.minY, y); bounds.maxY = Math.max(bounds.maxY, y);
+  bounds.minZ = Math.min(bounds.minZ, z); bounds.maxZ = Math.max(bounds.maxZ, z);
+}
+
+/* ------------------------------------------------------------------ *
+ * meters
+ * ------------------------------------------------------------------ */
+
+const $ = id => document.getElementById(id);
+
+function paint() {
+  $('m-grid').textContent   = gridLabel();
+  $('m-blocks').textContent = index.size.toLocaleString();
+  $('m-extent').textContent = index.size
+    ? `${Math.round((bounds.maxX - bounds.minX + 1) * BLOCK_SIZE)}×` +
+      `${Math.round((bounds.maxZ - bounds.minZ + 1) * BLOCK_SIZE)}×` +
+      `${Math.round((bounds.maxY - bounds.minY + 1) * BLOCK_SIZE)} m`
+    : '—';
+}
+
+/* ------------------------------------------------------------------ *
+ * framing
+ * ------------------------------------------------------------------ */
+
+const box    = new THREE.Box3();
+const size   = new THREE.Vector3();
+const centre = new THREE.Vector3();
+
+/** Distance at which the whole build fits the frame. */
+function idealDistance() {
+  box.setFromObject(world);
+  box.getSize(size);
+  box.getCenter(centre);
+  return Math.max(size.x, size.y, size.z) * 1.8 + 5 * BLOCK_SIZE;
+}
+
+/** Runs only while the agent owns the camera. */
+function autoFrame() {
+  if (!index.size || userHasCamera) return;
+
+  const want = idealDistance();
+  controls.target.lerp(centre, 0.05);
+
+  const dist = camera.position.distanceTo(controls.target);
+  if (Math.abs(dist - want) > 3 * BLOCK_SIZE) {
+    const dir = camera.position.clone().sub(controls.target).normalize();
+    camera.position.lerp(
+      controls.target.clone().add(dir.multiplyScalar(want)), 0.04
+    );
+  }
+}
+
+/** F — snap back to a full view of the build, keeping the current angle. */
+function reframe() {
+  if (!index.size) return;
+  const want = idealDistance();
+  const dir  = camera.position.clone().sub(controls.target).normalize();
+  controls.target.copy(centre);
+  camera.position.copy(centre).add(dir.multiplyScalar(want));
+  userHasCamera = false;          // hand it back to the auto-framer
+  toast('reframed');
+}
+
+/** 1–4 — canned angles. Useful on camera. */
+function viewFrom(preset) {
+  if (!index.size) { toast('nothing to view'); return; }
+  const d = idealDistance();
+  const dirs = {
+    1: new THREE.Vector3( 1, 0.72,  1),   // three-quarter
+    2: new THREE.Vector3( 0, 0.18,  1),   // front, low — best silhouette
+    3: new THREE.Vector3( 1, 0.18,  0),   // side, low
+    4: new THREE.Vector3( 0, 1,  0.001),  // top-down plan
+  };
+  const labels = { 1: 'three-quarter', 2: 'front', 3: 'side', 4: 'plan' };
+
+  controls.target.copy(centre);
+  camera.position.copy(centre).add(dirs[preset].normalize().multiplyScalar(d));
+  userHasCamera = true;
+  controls.autoRotate = false;
+  toast(labels[preset]);
+}
+
+/* ------------------------------------------------------------------ *
+ * toggles
+ * ------------------------------------------------------------------ */
+
+let edgesOn = true;
+
+function toggleEdges() {
+  edgesOn = !edgesOn;
+  world.traverse(o => { if (o.isLineSegments) o.visible = edgesOn; });
+  toast(edgesOn ? 'edges on' : 'edges off');
+}
+
+function toggleGrid() {
+  grid.visible = !grid.visible;
+  toast(grid.visible ? 'grid on' : 'grid off');
+}
+
+function toggleRotate() {
+  controls.autoRotate = !controls.autoRotate;
+  toast(controls.autoRotate ? 'auto-rotate on' : 'auto-rotate off');
+}
+
+/* ------------------------------------------------------------------ *
+ * toast + legend fade
+ * ------------------------------------------------------------------ */
+
+const toastEl = $('toast');
+let toastTimer;
+
+function toast(msg) {
+  toastEl.textContent = msg;
+  // toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 900);
+}
+
+const keysEl = $('keys');
+keysEl.remove('show');
+let hushTimer;
+
+/** Dim the legend once the user clearly knows the controls. */
+function hushKeys() {
+  clearTimeout(hushTimer);
+  hushTimer = setTimeout(() => keysEl.classList.add('hushed'), 4000);
+}
+
+/* ------------------------------------------------------------------ *
+ * keyboard
+ * ------------------------------------------------------------------ */
+
+addEventListener('keydown', (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+  switch (e.key.toLowerCase()) {
+    case 'f': reframe();      break;
+    case 'r': toggleRotate();  break;
+    case 'g': toggleGrid();    break;
+    case 'e': toggleEdges();   break;
+    case '1': viewFrom(1);     break;
+    case '2': viewFrom(2);     break;
+    case '3': viewFrom(3);     break;
+    case '4': viewFrom(4);     break;
+    default:  return;
+  }
+  hushKeys();
+});
+
+/* ------------------------------------------------------------------ *
+ * websocket
+ * ------------------------------------------------------------------ */
+
+const linkEl  = $('link');
+const linkTxt = $('linktxt');
+const setLink = (on, t) => {
+  linkEl.classList.toggle('on', on);
+  linkTxt.textContent = t;
+};
+
+function connect() {
+  let ws;
+  try { ws = new WebSocket(WS_URL); }
+  catch { setLink(false, 'offline'); return; }
+
+  ws.onopen  = () => setLink(true, 'live');
+  ws.onclose = () => { setLink(false, 'offline'); setTimeout(connect, 2500); };
+  ws.onerror = () => ws.close();
+
+  ws.onmessage = (e) => {
+    let m; try { m = JSON.parse(e.data); } catch { return; }
+
+    switch (m.type) {
+      case 'place':
+        addBlock(m.x, m.y, m.z, m.material);
+        break;
+      case 'batch':
+        for (const b of m.blocks) addBlock(b.x, b.y, b.z, b.material);
+        break;
+      case 'remove':                     // targeted — no re-drop
+        for (const b of m.blocks) removeBlock(b.x, b.y, b.z);
+        break;
+      case 'clear':
+        clearWorld();
+        break;
+      case 'snapshot':                   // reconnect only
+        clearWorld();
+        for (const b of m.blocks ?? []) addBlock(b.x, b.y, b.z, b.material, false);
+        break;
+    }
+    paint();
+  };
+}
+connect();
+
+/* ------------------------------------------------------------------ *
+ * loop
+ * ------------------------------------------------------------------ */
+
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+const from = new THREE.Vector3();
+
+function tick(now) {
+  requestAnimationFrame(tick);
+
+  for (const [k, f] of falling) {
+    if (now < f.start) continue;
+    const t = Math.min((now - f.start) / DROP_MS, 1);
+    const e = easeOut(t);
+
+    from.set(f.rest.x, f.rest.y + DROP_H, f.rest.z);
+    f.mesh.position.lerpVectors(from, f.rest, e);
+    f.mesh.scale.setScalar(0.8 + 0.2 * e);
+
+    if (t === 1) falling.delete(k);
+  }
+
+  autoFrame();
+  controls.update();
+  renderer.render(scene, camera);
+}
+requestAnimationFrame(tick);
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+paint();
+hushKeys();
+
+/* ------------------------------------------------------------------ *
+ * mock feed — a fairytale castle, so the viewer works before the
+ * server does. Load with ?live to suppress it.
+ * ------------------------------------------------------------------ */
+
+if (!location.search.includes('live')) {
+  const q = [];
+  const B = (x, y, z, m) => q.push([x, y, z, m]);
+
+  const cyl = (cx, cz, r, y0, h, m, hollow = true) => {
+    for (let y = y0; y < y0 + h; y++)
+      for (let x = Math.floor(cx - r); x <= Math.ceil(cx + r); x++)
+        for (let z = Math.floor(cz - r); z <= Math.ceil(cz + r); z++) {
+          const d = Math.hypot(x - cx, z - cz);
+          if (d > r + 0.5) continue;
+          if (hollow && d < r - 0.9) continue;
+          B(x, y, z, m);
+        }
+  };
+  const cone = (cx, cz, r, y0, h, m) => {
+    for (let i = 0; i < h; i++) {
+      const rr = r * (1 - i / h);
+      for (let x = Math.floor(cx - rr); x <= Math.ceil(cx + rr); x++)
+        for (let z = Math.floor(cz - rr); z <= Math.ceil(cz + rr); z++)
+          if (Math.hypot(x - cx, z - cz) <= rr + 0.4) B(x, y0 + i, z, m);
+    }
+  };
+
+  for (let y = 0; y < 9; y++)
+    for (let i = -20; i <= 20; i++)
+      for (const [x, z] of [[i, -20], [i, 20], [-20, i], [20, i]])
+        B(x, y, z, y < 2 ? 'granite' : 'limestone');
+
+  for (let i = -20; i <= 20; i++)
+    if ((i + 20) % 3 !== 2)
+      for (const [x, z] of [[i, -20], [i, 20], [-20, i], [20, i]])
+        B(x, 9, z, 'limestone');
+
+  for (const [cx, cz] of [[-20,-20],[20,-20],[-20,20],[20,20]]) {
+    cyl(cx, cz, 4, 0, 26, 'marble');
+    cone(cx, cz, 5.5, 26, 14, 'tile_purple');
+    B(cx, 40, cz, 'gold');
+    cyl(cx, cz, 4, 10, 2, 'glass_azure');
+    cyl(cx, cz, 4, 17, 2, 'glass_azure');
+  }
+
+  cyl(-6, 20, 3.5, 0, 20, 'marble'); cone(-6, 20, 5, 20, 11, 'tile_crimson');
+  cyl( 6, 20, 3.5, 0, 20, 'marble'); cone( 6, 20, 5, 20, 11, 'tile_crimson');
+  B(-6, 31, 20, 'gold'); B(6, 31, 20, 'gold');
+
+  cyl(0, 0, 8, 0, 34, 'marble');
+  cone(0, 0, 10, 34, 20, 'tile_purple');
+  B(0, 54, 0, 'gold_pale');
+  for (let y = 8; y < 30; y += 6) cyl(0, 0, 8, y, 2, 'glass_rose');
+
+  for (const [cx, cz] of [[-11,-11],[11,-11],[-11,11],[11,11]]) {
+    cyl(cx, cz, 2.5, 0, 22, 'limestone');
+    cone(cx, cz, 3.5, 22, 12, 'copper_verdigris');
+  }
+
+  let i = 0;
+  (function feed() {
+    for (let n = 0; n < 60 && i < q.length; n++, i++) addBlock(...q[i]);
+    paint();
+    if (i < q.length) setTimeout(feed, 16);
+  })();
+
+  // carve the gate late — proves removal doesn't re-drop the castle
+  setTimeout(() => {
+    for (let x = -3; x <= 3; x++)
+      for (let y = 0; y < 7; y++)
+        removeBlock(x, y, 20);
+    paint();
+  }, 2600);
+}
+</script>
+</body>
+</html>

@@ -1,44 +1,52 @@
-{
-  "mcpServers": {
-    "godot": {
-      "command": "node",
-      "args": [
-        "C:\\Users\\Administrator\\AppData\\Local\\hermes\\node\\node_modules\\godot-mcp\\build\\index.js"
-      ],
-      "env": {
-        "GODOT_PATH": "C:\\Users\\Administrator\\.gemini\\antigravity\\bin\\godot.exe"
-      }
-    },
-    "godot-bridge": {
-      "command": "node",
-      "args": [
-        "C:\\Users\\Administrator\\AppData\\Local\\hermes\\node\\node_modules\\godot-mcp-bridge\\dist\\index.js"
-      ]
-    },
-    "voxel": {
-      "command": "node",
-      "args": [
-        "C:\\Users\\Administrator\\.gemini\\antigravity\\mcp_servers\\voxel-mcp\\dist\\index.js"
-      ]
-    },
-    "blockbench": {
-      "command": "node",
-      "args": [
-        "C:\\Users\\Administrator\\.gemini\\antigravity\\mcp_servers\\blockbench-mcp\\dist\\index.js"
-      ]
-    },
-    "blender": {
-      "command": "uvx",
-      "args": ["blender-mcp"],
-      "env": {
-        "DISABLE_TELEMETRY": "true"
-      }
-    },
-    "remotion": {
-      "command": "node",
-      "args": [
-        "C:\\Users\\Administrator\\AppData\\Local\\hermes\\node\\node_modules\\@remotion\\mcp\\dist\\index.js"
-      ]
-    }
-  }
+﻿{
+    "mcpServers":  {
+                       "godot":  {
+                                     "command":  "node",
+                                     "args":  [
+                                                  "C:\\Users\\Administrator\\AppData\\Local\\hermes\\node\\node_modules\\godot-mcp\\build\\index.js"
+                                              ],
+                                     "env":  {
+                                                 "GODOT_PATH":  "C:\\Users\\Administrator\\.gemini\\antigravity\\bin\\godot.exe"
+                                             }
+                                 },
+                       "godot-bridge":  {
+                                            "command":  "node",
+                                            "args":  [
+                                                         "C:\\Users\\Administrator\\AppData\\Local\\hermes\\node\\node_modules\\godot-mcp-bridge\\dist\\index.js"
+                                                     ]
+                                        },
+                       "voxel":  {
+                                     "command":  "node",
+                                     "args":  [
+                                                  "C:\\Users\\Administrator\\.gemini\\antigravity\\mcp_servers\\voxel-mcp\\dist\\index.js"
+                                              ]
+                                 },
+                       "blockbench":  {
+                                          "command":  "node",
+                                          "args":  [
+                                                       "C:\\Users\\Administrator\\.gemini\\antigravity\\mcp_servers\\blockbench-mcp\\dist\\index.js"
+                                                   ]
+                                      },
+                       "blender":  {
+                                       "command":  "uvx",
+                                       "args":  [
+                                                    "blender-mcp"
+                                                ],
+                                       "env":  {
+                                                   "DISABLE_TELEMETRY":  "true"
+                                               }
+                                   },
+                       "remotion":  {
+                                        "command":  "node",
+                                        "args":  [
+                                                     "C:\\Users\\Administrator\\AppData\\Local\\hermes\\node\\node_modules\\@remotion\\mcp\\dist\\index.js"
+                                                 ]
+                                    },
+                       "blockworld":  {
+                                          "command":  "node",
+                                          "args":  [
+                                                       "C:\\Users\\Administrator\\.gemini\\antigravity\\mcp_servers\\blockworld\\server.js"
+                                                   ]
+                                      }
+                   }
 }

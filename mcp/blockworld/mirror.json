@@ -1,0 +1,1 @@
+{"name":"mirror","description":"Mirror the whole build across a plane. Build one wing, one half of a castle facade, then mirror across x=0 for symmetry.","parameters":{"type":"object","properties":{"axis":{"type":"string","enum":["x","z"]},"plane":{"type":"integer","default":0}},"required":["axis"],"additionalProperties":false,"$schema":"http://json-schema.org/draft-07/schema#"}}

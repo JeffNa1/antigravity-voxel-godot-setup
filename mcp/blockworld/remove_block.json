@@ -1,0 +1,1 @@
+{"name":"remove_block","description":"Remove one block. Carve openings — gates, arrow slits, eye sockets.","parameters":{"type":"object","properties":{"x":{"type":"integer"},"y":{"type":"integer","minimum":0},"z":{"type":"integer"}},"required":["x","y","z"],"additionalProperties":false,"$schema":"http://json-schema.org/draft-07/schema#"}}

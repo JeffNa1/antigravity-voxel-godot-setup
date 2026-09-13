@@ -125,6 +125,16 @@ if (Test-Path $McpServersSrc) {
         Pop-Location
         Write-Host "  [+] blockbench-mcp ready at: $BlockbenchMcpDir\dist\index.js" -ForegroundColor Cyan
     }
+
+    # Build blockworld
+    $BlockworldDir = Join-Path $McpServersDest "blockworld"
+    if (Test-Path $BlockworldDir) {
+        Write-Host "  [*] Installing dependencies for blockworld..." -ForegroundColor DarkGray
+        Push-Location $BlockworldDir
+        npm.cmd install --silent 2>$null | Out-Null
+        Pop-Location
+        Write-Host "  [+] blockworld ready at: $BlockworldDir\server.js" -ForegroundColor Cyan
+    }
 }
 
 # ----------------------------------------------------

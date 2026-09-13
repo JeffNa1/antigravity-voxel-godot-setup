@@ -1,0 +1,1 @@
+{"name":"world_info","description":"Report the physical scale of the world. CALL THIS FIRST, before any build — you cannot infer the block size from the other tool signatures, and every dimension you choose depends on it.","parameters":{"type":"object","properties":{},"$schema":"http://json-schema.org/draft-07/schema#"}}

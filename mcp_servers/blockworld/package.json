@@ -1,0 +1,14 @@
+{
+  "name": "blockworld",
+  "version": "2.0.0",
+  "type": "module",
+  "bin": { "blockworld": "./server.js" },
+  "scripts": {
+    "viewer": "npx --yes serve . -p 5173"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "ws": "^8.18.0",
+    "zod": "^3.23.8"
+  }
+}
