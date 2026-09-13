@@ -42,7 +42,23 @@ $gitVer = if ($gitCmd) { (git --version) } else { "" }
 Print-Check -Title "Git CLI" -Success ([bool]$gitCmd) -Detail $gitVer
 
 $ghCmd = Get-Command gh -ErrorAction SilentlyContinue
-Print-Check -Title "GitHub CLI (gh)" -Success ([bool]$ghCmd) -Detail "gh CLI available"
+$ghVer = if ($ghCmd) { (gh --version | Select-Object -First 1) } else { "" }
+Print-Check -Title "GitHub CLI (gh)" -Success ([bool]$ghCmd) -Detail $ghVer
+
+$godotBin = if (Get-Command godot -ErrorAction SilentlyContinue) { (Get-Command godot).Source } elseif (Test-Path (Join-Path $AgyDir "bin\godot.exe")) { (Join-Path $AgyDir "bin\godot.exe") } else { $null }
+$hasGodot = [bool]$godotBin -and (Test-Path $godotBin)
+$godotVer = ""
+if ($hasGodot) {
+    try {
+        $tempVerFile = Join-Path $env:TEMP "godot_vcheck.txt"
+        Start-Process -FilePath $godotBin -ArgumentList "--headless --version" -NoNewWindow -Wait -RedirectStandardOutput $tempVerFile -ErrorAction SilentlyContinue
+        if (Test-Path $tempVerFile) {
+            $godotVer = (Get-Content $tempVerFile -Raw).Trim()
+            Remove-Item $tempVerFile -Force -ErrorAction SilentlyContinue
+        }
+    } catch {}
+}
+Print-Check -Title "Godot Engine 4 (godot.exe)" -Success $hasGodot -Detail $(if ($godotVer) { "$godotVer ($godotBin)" } else { $godotBin })
 
 Write-Host "`n--- 2. ANTIGRAVITY SKILLS ---" -ForegroundColor Yellow
 $SkillsConfig = Join-Path $ConfigDir "skills"

@@ -47,6 +47,11 @@ When you drop this repository or its GitHub URL into an AI coding assistant (suc
 
 ## 🏗️ What's Included
 
+### 0. 📦 Automated Engine & Toolchain Provisioning
+- **Godot Engine 4.3 Stable**: Automatically detected or downloaded directly into `~/.gemini/antigravity/bin/godot.exe` during setup. Fully headless-capable and pre-configured for `godot-mcp`.
+- **GitHub CLI (`gh`)**: Automatically downloaded and added to system `PATH` if not already installed.
+- **Node.js MCP Runners & TypeScript Builds**: Dependencies for custom runners (`voxel-mcp`, `blockbench-mcp`) and global packages (`godot-mcp`, `godot-mcp-bridge`, `@remotion/mcp`) compiled and installed on the fly.
+
 ### 1. 🔌 6 MCP Servers (Model Context Protocol)
 
 | Server | Type | Description | Key Capabilities |

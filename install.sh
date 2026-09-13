@@ -34,6 +34,34 @@ if [ -d "$AGY_DIR/mcp_servers/blockbench-mcp" ]; then
     (cd "$AGY_DIR/mcp_servers/blockbench-mcp" && npm install --silent && npm run build) || true
 fi
 
+# Ensure Godot 4.x on Linux/Unix
+if ! command -v godot &> /dev/null && [ ! -f "$AGY_DIR/bin/godot" ]; then
+    echo "  [*] Godot 4 not found. Auto-downloading Godot 4.3 Stable (Linux x86_64)..."
+    GODOT_URL="https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip"
+    curl -sL -o /tmp/godot.zip "$GODOT_URL" || true
+    if [ -f /tmp/godot.zip ]; then
+        unzip -q -o /tmp/godot.zip -d /tmp/godot_extract 2>/dev/null || true
+        cp /tmp/godot_extract/Godot* "$AGY_DIR/bin/godot" 2>/dev/null || true
+        chmod +x "$AGY_DIR/bin/godot" 2>/dev/null || true
+        rm -rf /tmp/godot.zip /tmp/godot_extract
+        echo "  [+] Installed Godot 4.3 to $AGY_DIR/bin/godot"
+    fi
+fi
+
+# Ensure GitHub CLI on Linux/Unix
+if ! command -v gh &> /dev/null && [ ! -f "$AGY_DIR/bin/gh" ]; then
+    echo "  [*] GitHub CLI not found. Downloading gh CLI..."
+    GH_URL="https://github.com/cli/cli/releases/download/v2.100.0/gh_2.100.0_linux_amd64.tar.gz"
+    curl -sL -o /tmp/gh.tar.gz "$GH_URL" || true
+    if [ -f /tmp/gh.tar.gz ]; then
+        tar -xzf /tmp/gh.tar.gz -C /tmp/ 2>/dev/null || true
+        cp /tmp/gh_*/bin/gh "$AGY_DIR/bin/gh" 2>/dev/null || true
+        chmod +x "$AGY_DIR/bin/gh" 2>/dev/null || true
+        rm -rf /tmp/gh.tar.gz /tmp/gh_*
+        echo "  [+] Installed GitHub CLI to $AGY_DIR/bin/gh"
+    fi
+fi
+
 echo "[4/4] Copying configurations & instructions..."
 mkdir -p "$CONFIG_DIR/projects"
 cp -r "$SCRIPT_DIR/configs/projects/"* "$CONFIG_DIR/projects/" 2>/dev/null || true

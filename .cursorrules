@@ -30,7 +30,7 @@
 >    ```powershell
 >    powershell -ExecutionPolicy Bypass -File .\verify.ps1
 >    ```
-> 4. Once verified, confirm to the user that all 22 skills, 6 MCP servers, and configurations are active and ready.
+> 4. Once verified, confirm to the user that all 22 skills, 6 MCP servers, Godot 4, GitHub CLI, and configurations are active and ready.
 
 ---
 
@@ -113,3 +113,4 @@ Activate specialized skills according to the task phase:
 - **Godot GDScript**: Follow GDScript style guide (tabs for indentation, static typing `var health: int = 100`, `@onready` node references).
 - **TypeScript / React**: Strict type checking (`noImplicitAny: true`), modular functional components, memoization for expensive transforms.
 - **PowerShell / Shell Scripts**: Robust error handling (`$ErrorActionPreference = "Stop"`), parameter validation, clear progress output, dynamic user profile resolution.
+

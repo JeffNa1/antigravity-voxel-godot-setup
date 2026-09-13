@@ -48,6 +48,18 @@ foreach ($dir in $DirsToCreate) {
     }
 }
 
+# Ensure bin directory is in PATH for current process and user environment
+$BinDir = Join-Path $AgyDir "bin"
+if ($env:PATH -notlike "*$BinDir*") {
+    $env:PATH = "$BinDir;$env:PATH"
+    try {
+        $currentUserPath = [Environment]::GetEnvironmentVariable("PATH", "User")
+        if ($currentUserPath -notlike "*$BinDir*") {
+            [Environment]::SetEnvironmentVariable("PATH", "$BinDir;$currentUserPath", "User")
+        }
+    } catch {}
+}
+
 # ----------------------------------------------------
 # 2. Copy Antigravity Skills
 # ----------------------------------------------------
@@ -137,12 +149,36 @@ if (Get-Command uvx -ErrorAction SilentlyContinue) {
     uv tool install blender-mcp 2>$null | Out-Null
 }
 
+# GitHub CLI (gh)
+$GhInstalled = [bool](Get-Command gh -ErrorAction SilentlyContinue) -or (Test-Path (Join-Path $AgyDir "bin\gh.exe"))
+if (-not $GhInstalled) {
+    Write-Host "  [*] GitHub CLI (gh) not found. Auto-downloading GitHub CLI..." -ForegroundColor Yellow
+    try {
+        $ghZipUrl = "https://github.com/cli/cli/releases/download/v2.100.0/gh_2.100.0_windows_amd64.zip"
+        $ghTempZip = Join-Path $env:TEMP "gh_setup.zip"
+        $ghTempDir = Join-Path $env:TEMP "gh_setup_extract"
+        curl.exe -sL -o $ghTempZip $ghZipUrl
+        Expand-Archive -Path $ghTempZip -DestinationPath $ghTempDir -Force
+        $foundGh = Get-ChildItem -Path $ghTempDir -Filter "gh.exe" -Recurse | Select-Object -First 1
+        if ($foundGh) {
+            Copy-Item $foundGh.FullName -Destination (Join-Path $AgyDir "bin\gh.exe") -Force
+            Write-Host "  [+] Installed GitHub CLI to $(Join-Path $AgyDir 'bin\gh.exe')" -ForegroundColor Cyan
+        }
+        Remove-Item $ghTempZip -Force -ErrorAction SilentlyContinue
+        Remove-Item $ghTempDir -Recurse -Force -ErrorAction SilentlyContinue
+    } catch {
+        Write-Warning "Could not auto-download GitHub CLI: $_"
+    }
+} else {
+    Write-Host "  [=] GitHub CLI (gh) is available." -ForegroundColor DarkGray
+}
+
 # ----------------------------------------------------
 # 6. Generate Dynamic Configuration Files
 # ----------------------------------------------------
 Write-Host "`n[6/7] Generating configuration files with dynamic paths..." -ForegroundColor Green
 
-# Locate Godot executable
+# Locate Godot executable or auto-download
 $ResolvedGodot = ""
 if ($CustomGodotPath -and (Test-Path $CustomGodotPath)) {
     $ResolvedGodot = $CustomGodotPath
@@ -154,9 +190,32 @@ if ($CustomGodotPath -and (Test-Path $CustomGodotPath)) {
     $PotentialGodots = Get-ChildItem -Path "$UserHome" -Filter "godot*.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
     if ($PotentialGodots) {
         $ResolvedGodot = $PotentialGodots.FullName
-    } else {
-        $ResolvedGodot = (Join-Path $AgyDir "bin\godot.exe")
     }
+}
+
+if (-not $ResolvedGodot -or -not (Test-Path $ResolvedGodot)) {
+    Write-Host "  [*] Godot Engine 4 not found. Auto-downloading Godot 4.3 Stable (Win64)..." -ForegroundColor Yellow
+    $GodotTarget = Join-Path $AgyDir "bin\godot.exe"
+    try {
+        $godotZipUrl = "https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_win64.exe.zip"
+        $tempGodotZip = Join-Path $env:TEMP "godot43_setup.zip"
+        $tempGodotDir = Join-Path $env:TEMP "godot43_setup_extract"
+        curl.exe -sL -o $tempGodotZip $godotZipUrl
+        Expand-Archive -Path $tempGodotZip -DestinationPath $tempGodotDir -Force
+        $foundExe = Get-ChildItem -Path $tempGodotDir -Filter "*.exe" | Select-Object -First 1
+        if ($foundExe) {
+            Copy-Item $foundExe.FullName -Destination $GodotTarget -Force
+            Write-Host "  [+] Installed Godot Engine 4.3 to $GodotTarget" -ForegroundColor Cyan
+            $ResolvedGodot = $GodotTarget
+        }
+        Remove-Item $tempGodotZip -Force -ErrorAction SilentlyContinue
+        Remove-Item $tempGodotDir -Recurse -Force -ErrorAction SilentlyContinue
+    } catch {
+        Write-Warning "Could not auto-download Godot 4: $_"
+        $ResolvedGodot = $GodotTarget
+    }
+} else {
+    Write-Host "  [+] Godot Engine 4 located at: $ResolvedGodot" -ForegroundColor Cyan
 }
 
 # Resolve package entrypoints
@@ -282,7 +341,8 @@ Write-Host "  [+] Deployed agent instructions to ~/.gemini (GEMINI.md, AGENTS.md
 Write-Host "`n[7/7] Environment Verification..." -ForegroundColor Green
 Write-Host "  Skills installed:    $skillCount" -ForegroundColor White
 Write-Host "  MCP servers active:  6 (godot, godot-bridge, voxel, blockbench, blender, remotion)" -ForegroundColor White
-Write-Host "  Godot Binary Path:   $ResolvedGodot" -ForegroundColor White
+Write-Host "  Godot Binary:        $ResolvedGodot" -ForegroundColor White
+Write-Host "  GitHub CLI:          $(if (Get-Command gh -ErrorAction SilentlyContinue) { 'Ready' } else { 'Pending login' })" -ForegroundColor White
 
 Write-Host "`n==========================================================" -ForegroundColor Cyan
 Write-Host "  ANTIGRAVITY ENVIRONMENT SETUP COMPLETE!" -ForegroundColor Green
